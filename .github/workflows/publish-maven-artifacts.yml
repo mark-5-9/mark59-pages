@@ -1,0 +1,85 @@
+name: Publish Maven Artifacts to GitHub Pages
+
+# Publishes mark59-core, mark59-scripting, and mark59-datahunter-api to the
+# 'mvn-repo' branch, which is served publicly via GitHub Pages at:
+# https://mark-5-9.github.io/mark59-pages
+#
+# Consumers add this to their pom.xml:
+#
+#   <repositories>
+#     <repository>
+#       <id>mark59-pages</id>
+#       <url>https://mark-5-9.github.io/mark59-pages</url>
+#     </repository>
+#   </repositories>
+
+on:
+  # Trigger manually from the GitHub Actions UI (any collaborator with write access can run this)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — build and stage only, do not publish to mvn-repo branch'
+        type: boolean
+        default: false
+
+  # Auto-trigger on version tags (e.g. git tag v6.6 && git push --tags)
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # Required to push to the mvn-repo branch
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # Install all three modules (and their inter-dependencies) to the local
+      # Maven cache so that the deploy phase can resolve them offline.
+      - name: Install modules to local cache
+        run: |
+          mvn install \
+            --batch-mode \
+            --no-transfer-progress \
+            -DskipTests \
+            -pl mark59-core,mark59-datahunter-api,mark59-scripting \
+            -am
+
+      # Deploy only the three publishable modules to a local staging directory
+      # using the standard Maven repository layout.
+      - name: Stage artifacts for deployment
+        run: |
+          mvn deploy \
+            --batch-mode \
+            --no-transfer-progress \
+            -DskipTests \
+            -DaltDeploymentRepository="local-repo::default::file://${{ github.workspace }}/mvn-staging" \
+            -pl mark59-core,mark59-datahunter-api,mark59-scripting
+
+      # Prevent GitHub Pages' Jekyll processor from ignoring files/folders
+      # whose names begin with an underscore (Maven metadata uses none, but
+      # this is standard practice for any Pages-hosted static site).
+      - name: Add .nojekyll marker
+        run: touch mvn-staging/.nojekyll
+
+      # Push the staged files to the 'mvn-repo' branch.
+      # clean: false ensures previously published versions are NOT deleted.
+      - name: Deploy to mvn-repo branch (GitHub Pages)
+        if: ${{ github.event_name == 'push' || !inputs.dry_run }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: mvn-repo
+          folder: mvn-staging
+          clean: false
+          commit-message: "Publish artifacts [${{ github.ref_name }}]"
