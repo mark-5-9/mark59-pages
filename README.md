@@ -7,7 +7,7 @@ in the form of a Maven formatted repository.  Usage:
 <br>- The Mark59 Pages will update, Page 'index.html' should display at 
 <a href="https://mark-5-9.github.io/mark59-pages">https://mark-5-9.github.io/mark59-pages</a>
 <br>- Artifacts in the repository can be referenced by including the Mark59 Pages repo as a repository in your Maven's project pom.xml:
-<br>&nbsp;&nbsp;<code>&lt;repositories&gt;&lt;repository&gt;&lt;id&gt;mark59-pages&lt;/id&gt;&lt;url&gt;https://mark-5-9.github.io/mark59-pages&lt;/url&gt;&lt;/repository&gt;&lt;/repositories&gt;</code>
+<br>&nbsp;&nbsp;<pre>&lt;repositories&gt;&lt;repository&gt;&lt;id&gt;mark59-pages&lt;/id&gt;&lt;url&gt;https://mark-5-9.github.io/mark59-pages &lt;/url&gt;&lt;/repository&gt;&lt;/repositories&gt;</pre>
 <br><br>
 
 ## Mark59 Guides, Downloads and More ..
