@@ -1,8 +1,14 @@
 
-This is the <b>MARK59-PAGES</b> repository for Mark59.  It is intended to to used to deploy artefacts to Mark59 GitHub pages.
-<br>Be aware it may not always be in a completely consistent state.<br><br>
-
-
+This is the <b>MARK59-PAGES</b> repository for Mark59 - it is specifically used to deploy versions of Mark59 Maven artifacts to the Mark59 Pages URL 
+in the form of a Maven formatted repository.  Usage:   
+<br>- Always deploy to main branch
+<br>- Run the 'Publish Maven Artifacts to GitHub Pages' workflow (dropdown always set to main).  This will build and deploy the required artifacts
+(automatically, on branch 'mvn-repo')
+<br>- The Mark59 Pages will update, Page 'index.html' should display at 
+<a href="https://mark-5-9.github.io/mark59-pages">https://mark-5-9.github.io/mark59-pages</a>
+<br>- Artifacts in the repository can be referenced by including the Mark59 Pages repo as a repository in your Maven's project pom.xml:
+<br>&nbsp;&nbsp;<code>&lt;repositories&gt;&lt;repository&gt;&lt;id&gt;mark59-pages&lt;/id&gt;&lt;url&gt;https://mark-5-9.github.io/mark59-pages&lt;/url&gt;&lt;/repository&gt;&lt;/repositories&gt;</code>
+<br><br>
 
 ## Mark59 Guides, Downloads and More ..
 
@@ -14,15 +20,15 @@ This is the <b>MARK59-PAGES</b> repository for Mark59.  It is intended to to use
 
   <ul>
     <li>Java 17+ is now required for all Mark59 components</li>
-    
    	<li>UI Scripting : (Bug) Comma separation of BROWSER_LAUNCH_ARGS didn't allow for any Argument option that itself may contain multiple
-   	comma-separated values.  Multiple arguments within BROWSER_LAUNCH_ARGS can now be separated by a semi-colon (;), or the characters 
+   	comma-separated values. Multiple arguments within BROWSER_LAUNCH_ARGS can now be separated by a semi-colon (;), or the characters 
    	",--" used to indicate the start of the next argument (white space between the comma and dashes allowed).  
    	This allows commas to be used to separate values in a multi-value argument.</li>
  	<li>UI Scripting and Metrics-API : Version numbers are printed for both the mark59-metrics-api and the first Mark59UI script
  	(on the classpath).Previously, a generic version number (actually for mark59-core) was printed, meaning there was no indication in 
  	the printout if different Mark59 versions of a UI script and the mark59-metrics-api were present.</li>
- 	<li>Trends Graph : Now displays a controlled error message when disallowed SQL is attempted, rather that the default error page.</li>
+ 	<li>UI Scripting : Additional (User defined) Parameters now displayed at top of parameter list on the JMeter Java Request Panel.</li>
+ 	<li>Trends Graph : Now displays a controlled error message when disallowed SQL is attempted, rather that the default error page.</li>	  
  	<li>Dependencies Updated: commons-lang3 added to Mark59-core (commons-lang3 has been removed from JMeter)</li> 	
  	<li>Dependencies Updated: spring-boot to 4.0.6, selenium to 4.47.0 (chrome v147), playwright to 1.59.0</li>
   </ul>
